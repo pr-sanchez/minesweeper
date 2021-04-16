@@ -20,5 +20,6 @@
     "babel-loader": "^8.2.2",
     "webpack": "5.33.2",
     "webpack-cli": "4.6.0"
-  }
+  },
+  "browserslist": "> 0.25%, not dead, not ie 11"
 }
