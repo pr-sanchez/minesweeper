@@ -10,7 +10,7 @@ function Tile({ tile, onHandleRevealTile, revealedTiles }) {
       return tile.hasBomb ? "Bomb" : "Safe!";
     }
 
-    return tile.key;
+    return "Check";
   }
 
   return (

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { shuffleArray, randomBoolean } from "../../utils";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { randomBoolean } from "../../utils";
 import styles from "./minesweeper.module.scss";
 import Tile from "./tile";
 
@@ -15,7 +15,7 @@ function test() {
   ////////////////////////////////////
   ////////////////////////////////////
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const calculatedArea = row * column;
     let filledTiles = [];
 
@@ -27,9 +27,8 @@ function test() {
       });
     }
 
-    const randomlyReorderTiles = shuffleArray(filledTiles);
-
-    setTiles(randomlyReorderTiles);
+    setRevealedTiles([]);
+    setTiles(filledTiles);
   }, [row, column]);
 
   ////////////////////////////////////
@@ -81,14 +80,20 @@ function test() {
       return null;
     }
 
+    if (tiles.length !== row * column) {
+      return null;
+    }
+
     const tilesCopy = [...tiles];
     let tableRowList = [];
     let tableColumns = [];
+    let tilesCount = 0;
 
     for (let index = 0; index < row; index++) {
       for (let iterator = 0; iterator < column; iterator++) {
-        const tile = tilesCopy.shift();
+        const tile = tilesCopy[tilesCount];
         tableColumns = [...tableColumns, renderTableColumn(tile)];
+        tilesCount++;
       }
       tableRowList.push(renderTableRow(tableColumns, index));
       tableColumns = [];
