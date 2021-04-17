@@ -1,4 +1,114 @@
+import { useEffect, useState } from "react";
+import { shuffleArray, randomBoolean } from "../../utils";
+import styles from "./minesweeper.module.scss";
+import Tile from "./tile";
+
 function test() {
-  return <h1>test</h1>;
+  const [row, setRow] = useState(0);
+  const [column, setColumn] = useState(0);
+  const [tiles, setTiles] = useState([]);
+  const [revealedTiles, setRevealedTiles] = useState([]);
+
+  ////////////////////////////////////
+  ////////////////////////////////////
+  //////// PRIVATE FUNCTIONS /////////
+  ////////////////////////////////////
+  ////////////////////////////////////
+
+  useEffect(() => {
+    const calculatedArea = row * column;
+    let filledTiles = [];
+
+    for (let index = 0; index < calculatedArea; index++) {
+      filledTiles.push({
+        key: index,
+        data: "some configuration",
+        hasBomb: randomBoolean(),
+      });
+    }
+
+    const randomlyReorderTiles = shuffleArray(filledTiles);
+
+    setTiles(randomlyReorderTiles);
+  }, [row, column]);
+
+  ////////////////////////////////////
+  ////////////////////////////////////
+  ////////// EVENT HANDLERS //////////
+  ////////////////////////////////////
+  ////////////////////////////////////
+
+  function handleSetRow(e) {
+    setRow(e.target.value);
+  }
+  function handleSetColumn(e) {
+    setColumn(e.target.value);
+  }
+
+  function handleRevealTile(tile) {
+    if (!revealedTiles.includes(tile.key)) {
+      setRevealedTiles([...revealedTiles, tile.key]);
+    }
+  }
+
+  ////////////////////////////////////
+  ////////////////////////////////////
+  //////////// RENDERERS /////////////
+  ////////////////////////////////////
+  ////////////////////////////////////
+
+  function renderTableRow(tableColumn, index) {
+    return <tr key={index}>{tableColumn}</tr>;
+  }
+
+  function renderTableColumn(tile) {
+    //thinking logic for uncover near safe area
+
+    console.log(tiles.length % row);
+
+    return (
+      <Tile
+        key={tile.key}
+        tile={tile}
+        onHandleRevealTile={handleRevealTile}
+        revealedTiles={revealedTiles}
+      />
+    );
+  }
+
+  function renderBoard() {
+    if (tiles.length > 0 == false) {
+      return null;
+    }
+
+    const tilesCopy = [...tiles];
+    let tableRowList = [];
+    let tableColumns = [];
+
+    for (let index = 0; index < row; index++) {
+      for (let iterator = 0; iterator < column; iterator++) {
+        const tile = tilesCopy.shift();
+        tableColumns = [...tableColumns, renderTableColumn(tile)];
+      }
+      tableRowList.push(renderTableRow(tableColumns, index));
+      tableColumns = [];
+    }
+
+    return (
+      <table>
+        <tbody>{tableRowList}</tbody>
+      </table>
+    );
+  }
+
+  return (
+    <div>
+      please enter the numbers of rows:{" "}
+      <input onChange={handleSetRow} value={row} />
+      please enter the numbers of columns:{" "}
+      <input onChange={handleSetColumn} value={column} />
+      <div className={styles.Board}>{renderBoard()}</div>
+    </div>
+  );
 }
 export default test;
