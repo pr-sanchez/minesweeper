@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function menu() {
+function Menu() {
   return (
     <>
       <Link to="/">Setup</Link>
@@ -10,4 +10,4 @@ function menu() {
   );
 }
 
-export default menu;
+export default Menu;

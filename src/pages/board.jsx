@@ -1,4 +1,6 @@
-function board() {
-  return "board";
+import Minesweeper from "../components/minesweeper";
+
+function Board() {
+  return <Minesweeper />;
 }
-export default board;
+export default Board;

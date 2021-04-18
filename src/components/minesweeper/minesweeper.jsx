@@ -3,7 +3,7 @@ import { randomBoolean } from "../../utils";
 import styles from "./minesweeper.module.scss";
 import Tile from "./tile";
 
-function test() {
+function Minesweeper() {
   const [row, setRow] = useState(0);
   const [column, setColumn] = useState(0);
   const [tiles, setTiles] = useState([]);
@@ -141,4 +141,4 @@ function test() {
     </div>
   );
 }
-export default test;
+export default Minesweeper;

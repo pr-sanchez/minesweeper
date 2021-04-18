@@ -3,7 +3,7 @@ import Setup from "./pages/setup";
 import Board from "./pages/board";
 import Scores from "./pages/scores";
 
-function routes() {
+function Routes() {
   return (
     <Switch>
       <Route exact path="/">
@@ -19,4 +19,4 @@ function routes() {
   );
 }
 
-export default routes;
+export default Routes;

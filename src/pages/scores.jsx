@@ -1,4 +1,4 @@
-function scores() {
+function Scores() {
   return "scores";
 }
-export default scores;
+export default Scores;
