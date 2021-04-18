@@ -24,6 +24,7 @@ function test() {
         key: index,
         data: "some configuration",
         hasBomb: randomBoolean(),
+        hasFlag: false,
       });
     }
 
@@ -45,9 +46,32 @@ function test() {
   }
 
   function handleRevealTile(tile) {
-    if (!revealedTiles.includes(tile.key)) {
+    if (!revealedTiles.includes(tile.key) && !tile.hasFlag) {
       setRevealedTiles([...revealedTiles, tile.key]);
     }
+  }
+
+  function hanldeSetFlag(tile) {
+    const tilesCopy = [...tiles];
+
+    const mappedTiles = tilesCopy.map((tileItem) => {
+      if (tileItem.hasFlag) {
+        return {
+          ...tileItem,
+          hasFlag: false,
+        };
+      }
+
+      if (tileItem.key === tile.key) {
+        return {
+          ...tileItem,
+          hasFlag: true,
+        };
+      }
+      return tileItem;
+    });
+
+    setTiles(mappedTiles);
   }
 
   ////////////////////////////////////
@@ -70,6 +94,7 @@ function test() {
         key={tile.key}
         tile={tile}
         onHandleRevealTile={handleRevealTile}
+        onHandleSetFlag={hanldeSetFlag}
         revealedTiles={revealedTiles}
       />
     );
