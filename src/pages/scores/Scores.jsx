@@ -1,4 +1,16 @@
+import { useEffect } from "react";
+
 function Scores() {
+  useEffect(() => {
+    console.log(getGameHistory());
+  }, []);
+
+  function getGameHistory() {
+    const gameHistoryJson = localStorage.getItem("gameHistory");
+    const parsedGameHistory = JSON.parse(gameHistoryJson);
+    return parsedGameHistory;
+  }
+
   return "scores";
 }
 export default Scores;

@@ -29,6 +29,19 @@ function Minesweeper() {
 
     if (tilesCount - revealedTilesCount === hiddenMines) {
       setIsGameWon(true);
+
+      const gameScore = {
+        startTime: null,
+        endTime: null,
+        difficulty: null,
+        totalTime: null,
+        status: "won",
+      };
+
+      const gameHistory = localStorage.getItem("gameHistory");
+      const parsedGameHistory = JSON.parse(gameHistory) ?? [];
+      parsedGameHistory.push(gameScore);
+      localStorage.setItem("gameHistory", parsedGameHistory);
       //save game to localstorage with
       // Start Time. Format: MM-DD-YYYY hh:mm (12hr format)
       // End Time: Format: MM-DD-YYYY hh:mm (12hr format)
