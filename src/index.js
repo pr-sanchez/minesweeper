@@ -1,10 +1,13 @@
 import { BrowserRouter } from "react-router-dom";
 import { render } from "react-dom";
 import App from "./App";
+import MinesweeperProvider from "./context/minesweeperProvider";
 
 render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <MinesweeperProvider>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </MinesweeperProvider>,
   document.getElementById("root")
 );

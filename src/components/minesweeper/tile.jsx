@@ -1,25 +1,31 @@
 import styles from "./minesweeper.module.scss";
 
-function Tile({ tile, onHandleRevealTile, onHandleSetFlag, revealedTiles }) {
+function Tile({ tile, onRevealTile, onSetFlag, onSetGameOver, revealedTiles }) {
   function handleTileClick() {
-    return onHandleRevealTile(tile);
+    onRevealTile(tile);
+    if (tile.hasBomb) {
+      onSetGameOver(true);
+    }
   }
 
   function handleSetFlag(e) {
     e.preventDefault();
-    return onHandleSetFlag(tile);
+    onSetFlag(tile);
   }
 
   function renderTileMessage() {
-    if (tile.hasFlag) {
-      return "Flag";
-    }
-
     if (revealedTiles.includes(tile.key)) {
-      return tile.hasBomb ? "Bomb" : "Safe!";
+      if (tile.hasFlag) {
+        return "Flag";
+      }
+      return tile.hasBomb ? "💣" : "";
     }
 
-    return "Check";
+    if (tile.nearBombsCount > 0) {
+      return tile.nearBombsCount;
+    }
+
+    return "[ ]";
   }
 
   return (
