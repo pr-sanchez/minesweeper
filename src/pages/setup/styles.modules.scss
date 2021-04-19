@@ -1,0 +1,33 @@
+.ButtonsContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  .Button {
+    width: 200px;
+    height: 60px;
+  }
+}
+
+.CustomSetupContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .ErrorMessage {
+    color: red;
+  }
+
+  .Input {
+    padding: 10px;
+    border: 0;
+    width: 200px;
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .Button {
+    width: 150px;
+    height: 40px;
+    margin: 20px 0 0 0;
+  }
+}

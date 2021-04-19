@@ -7,6 +7,7 @@ const MinesweeperProvider = (props) => {
     boardArea: 0,
     row: 0,
     column: 0,
+    hiddenMines: 0,
   };
 
   const [state, dispatch] = useReducer(minesweeperReducer, initialState);
@@ -17,6 +18,7 @@ const MinesweeperProvider = (props) => {
         boardArea: state.boardArea,
         row: state.row,
         column: state.column,
+        hiddenMines: state.hiddenMines,
         dispatch: dispatch,
       }}
     >

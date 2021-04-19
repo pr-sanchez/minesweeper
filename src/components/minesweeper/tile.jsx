@@ -15,28 +15,33 @@ function Tile({ tile, onRevealTile, onSetFlag, onSetGameOver, revealedTiles }) {
 
   function renderTileMessage() {
     if (revealedTiles.includes(tile.key)) {
-      if (tile.hasFlag) {
-        return "Flag";
+      if (tile.hasBomb) {
+        return "💣";
       }
-      return tile.hasBomb ? "💣" : "";
+
+      return "✅";
     }
 
     if (tile.nearBombsCount > 0) {
       return tile.nearBombsCount;
     }
 
-    return "[ ]";
+    if (tile.hasFlag) {
+      return "🚩";
+    }
+
+    return null;
   }
 
   return (
-    <td
+    <div
       key={tile.key}
       className={styles.Tile}
       onClick={handleTileClick}
       onContextMenu={handleSetFlag}
     >
       {renderTileMessage()}
-    </td>
+    </div>
   );
 }
 

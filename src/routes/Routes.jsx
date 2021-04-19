@@ -1,7 +1,7 @@
 import { Switch, Route } from "react-router-dom";
-import Setup from "../pages/Setup";
-import Board from "../pages/Board";
-import Scores from "../pages/Scores";
+import Setup from "../pages/setup/Setup";
+import Board from "../pages/Board/Board";
+import Scores from "../pages/scores/Scores";
 
 function Routes() {
   return (

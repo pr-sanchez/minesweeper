@@ -1,10 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import MinesweeperContext from "../context/minesweeperContext";
+import MinesweeperContext from "../../context/minesweeperContext";
+import Button from "../../components/button";
 import { useHistory } from "react-router-dom";
+import styles from "./styles.modules.scss";
 
 function Setup() {
   const [row, setRow] = useState(0);
   const [column, setColumn] = useState(0);
+  const [hiddenMines, setHiddenMines] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
   const minesweeperContext = useContext(MinesweeperContext);
   const history = useHistory();
 
@@ -45,8 +49,11 @@ function Setup() {
 
   function handleSubmitCustomSetup() {
     const boardArea = row * column;
-    if (boardArea > 1000) {
-      console.log(
+
+    if (row == 0 || column == 0 || hiddenMines == 0) {
+      setErrorMessage("None of the options could be in blank");
+    } else if (boardArea > 1000) {
+      setErrorMessage(
         "set board area that is calculated with row * column less than 1000"
       );
     } else {
@@ -54,6 +61,7 @@ function Setup() {
         boardArea: boardArea,
         row: parseInt(row),
         column: parseInt(column),
+        hiddenMines: parseInt(hiddenMines),
       };
 
       dispatch("CUSTOM", payload);
@@ -71,6 +79,10 @@ function Setup() {
     setIsCustom(true);
   }
 
+  function handleSetHiddenMines(e) {
+    setHiddenMines(e.target.value);
+  }
+
   ////////////////////////////////////
   ////////////////////////////////////
   //////////// RENDERERS /////////////
@@ -83,35 +95,68 @@ function Setup() {
     }
 
     return (
-      <>
-        please enter the numbers of rows:{" "}
+      <div className={styles.CustomSetupContainer}>
+        <h3 className={styles.ErrorMessage}>{errorMessage}</h3>
+        <h4> please enter the numbers of rows:</h4>
         <input
+          className={styles.Input}
           onChange={handleSetRow}
           value={row}
           type="number"
           min="1"
           max="100"
         />
-        please enter the numbers of columns:{" "}
+
+        <h4> please enter the numbers of columns:</h4>
         <input
+          className={styles.Input}
           onChange={handleSetColumn}
           value={column}
           type="number"
           min="1"
           max="100"
         />
-        <button onClick={handleSubmitCustomSetup}>SUBMIT</button>
-      </>
+
+        <h4> please enter the number of hidden mines:</h4>
+        <input
+          className={styles.Input}
+          onChange={handleSetHiddenMines}
+          value={hiddenMines}
+          type="number"
+          min="1"
+          max={row * column - 2}
+        />
+
+        <Button className={styles.Button} onClick={handleSubmitCustomSetup}>
+          SUBMIT
+        </Button>
+      </div>
+    );
+  }
+
+  function renderLevelButtons() {
+    return (
+      <div className={styles.ButtonsContainer}>
+        <h2> SELECT LEVEL:</h2>
+        <Button className={styles.Button} onClick={handleSelectEasy}>
+          EASY
+        </Button>
+        <Button className={styles.Button} onClick={handleSelectMedium}>
+          MEDIUM
+        </Button>
+        <Button className={styles.Button} onClick={handleSelectHard}>
+          HARD
+        </Button>
+        <Button className={styles.Button} onClick={handleSetIsCustom}>
+          CUSTOM
+        </Button>
+      </div>
     );
   }
 
   return (
     <div>
-      select difficulty:
-      <button onClick={handleSelectEasy}>EASY</button>
-      <button onClick={handleSelectMedium}>MEDIUM</button>
-      <button onClick={handleSelectHard}>HARD</button>
-      <button onClick={handleSetIsCustom}>CUSTOM</button>
+      {renderLevelButtons()}
       {renderCustomSetup()}
     </div>
   );

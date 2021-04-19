@@ -1,4 +1,6 @@
-function randomBoolean() {
-  return Math.random() < 0.5;
+function randomBoolean(probability) {
+  const difficulty = probability / 10;
+
+  return Math.random() < difficulty;
 }
 export default randomBoolean;

@@ -1,4 +1,4 @@
-import Minesweeper from "../components/minesweeper";
+import Minesweeper from "../../components/minesweeper";
 
 function Board() {
   return <Minesweeper />;
