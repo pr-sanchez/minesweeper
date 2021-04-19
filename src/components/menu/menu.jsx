@@ -1,12 +1,18 @@
 import { Link } from "react-router-dom";
-
+import styles from "./styles.modules.scss";
 function Menu() {
   return (
-    <>
-      <Link to="/">Setup</Link>
-      <Link to="/board">Board</Link>
-      <Link to="/scores">Scores</Link>
-    </>
+    <div className={styles.Menu}>
+      <Link className={styles.Item} to="/">
+        Setup
+      </Link>
+      <Link className={styles.Item} to="/board">
+        Board
+      </Link>
+      <Link className={styles.Item} to="/scores">
+        Scores
+      </Link>
+    </div>
   );
 }
 

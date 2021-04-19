@@ -1,11 +1,10 @@
+import classNames from "classnames";
 import { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import MinesweeperContext from "../../context/minesweeperContext";
-import { randomBoolean } from "../../utils";
 import Tile from "./Tile";
-
+import Button from "../button";
 import styles from "./minesweeper.module.scss";
-import classNames from "classnames";
 
 function Minesweeper() {
   const [tiles, setTiles] = useState([]);
@@ -319,8 +318,12 @@ function Minesweeper() {
   function renderRetryAndScoreButtons() {
     return (
       <>
-        <button onClick={handleClickRetry}>Retry</button>
-        <button onClick={handleClickScores}>Scores</button>
+        <Button className={styles.Button} onClick={handleClickRetry}>
+          Retry
+        </Button>
+        <Button className={styles.Button} onClick={handleClickScores}>
+          Scores
+        </Button>
       </>
     );
   }
@@ -350,11 +353,20 @@ function Minesweeper() {
     return renderModal("GAME OVER");
   }
 
+  function renderTotalMines() {
+    return (
+      <div className={styles.TotalMines}>
+        <h1>Total Mines: {totalMines}</h1>
+      </div>
+    );
+  }
+
   return (
     <div>
       {renderGameOverModal()}
       {renderYouWonModal()}
-      total mines: {totalMines}
+
+      {renderTotalMines()}
       {renderBoard()}
     </div>
   );

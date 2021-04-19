@@ -1,0 +1,15 @@
+.Menu {
+  display: flex;
+  border: 2px solid #000;
+  justify-content: space-evenly;
+  background: #696666;
+  align-items: center;
+  height: 50px;
+  .Item {
+    &:hover {
+      color: #ccc;
+    }
+    color: #fff;
+    text-decoration: none;
+  }
+}
