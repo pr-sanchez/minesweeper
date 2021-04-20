@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import PropTypes from "prop-types";
 import styles from "./minesweeper.module.scss";
 
@@ -36,8 +37,6 @@ function Tile({ tile, onRevealTile, onSetFlag, onSetGameOver, revealedTiles }) {
       if (tile.nearBombsCount > 0) {
         return tile.nearBombsCount;
       }
-
-      return "✅";
     }
 
     if (tile.hasFlag) {
@@ -47,11 +46,18 @@ function Tile({ tile, onRevealTile, onSetFlag, onSetGameOver, revealedTiles }) {
     return null;
   }
 
+  function setActive() {
+    if (revealedTiles.includes(tile.key)) {
+      return styles.isTileRevealed;
+    }
+    return null;
+  }
+
   return (
     <button
       type="button"
       key={tile.key}
-      className={styles.Tile}
+      className={classNames(styles.Tile, setActive())}
       onClick={handleTileClick}
       onContextMenu={handleSetFlag}
       onKeyPress={handleTileClick}
