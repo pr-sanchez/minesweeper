@@ -7,6 +7,7 @@ export default (state, action) => {
         row: 0,
         column: 0,
         hiddenMines: 0,
+        difficulty: "",
       };
     case "CUSTOM":
       return {
@@ -15,6 +16,7 @@ export default (state, action) => {
         row: action.payload.row,
         column: action.payload.column,
         hiddenMines: action.payload.hiddenMines,
+        difficulty: "custom",
       };
     case "EASY":
       return {
@@ -23,6 +25,7 @@ export default (state, action) => {
         row: 5,
         column: 5,
         hiddenMines: 3,
+        difficulty: "easy",
       };
     case "MEDIUM":
       return {
@@ -31,6 +34,7 @@ export default (state, action) => {
         row: 6,
         column: 6,
         hiddenMines: 10,
+        difficulty: "medium",
       };
     case "HARD":
       return {
@@ -39,6 +43,7 @@ export default (state, action) => {
         row: 7,
         column: 7,
         hiddenMines: 20,
+        difficulty: "hard",
       };
     default:
       return state;

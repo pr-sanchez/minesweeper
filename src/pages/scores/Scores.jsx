@@ -1,8 +1,12 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import styles from "./styles.modules.scss";
 
 function Scores() {
+  const [gameHistory, setGameHistory] = useState([]);
+
   useEffect(() => {
-    console.log(getGameHistory());
+    const games = getGameHistory();
+    setGameHistory(games);
   }, []);
 
   function getGameHistory() {
@@ -10,15 +14,25 @@ function Scores() {
     return parsedGameHistory;
   }
 
-  function clearScores() {
-    localStorage.removeItem("gameHistory");
+  // function clearScores() {
+  //   localStorage.removeItem("gameHistory");
+  // }
+
+  function renderScores() {
+    const mappedGameHistory = gameHistory.map(
+      ({ id, startTime, endTime, difficulty, timeSpent, status }) => (
+        <div key={id} className={styles.Match}>
+          <div>start time: {startTime}</div>
+          <div>end time: {endTime}</div>
+          <div>difficulty: {difficulty}</div>
+          <div>Total time spent: {timeSpent}</div>
+          <div>Status: {status}</div>
+        </div>
+      )
+    );
+    return mappedGameHistory;
   }
 
-  return "scores";
+  return <div className={styles.ScoreTable}>{renderScores()}</div>;
 }
 export default Scores;
-// Start Time. Format: MM-DD-YYYY hh:mm (12hr format)
-// End Time: Format: MM-DD-YYYY hh:mm (12hr format)
-// Difficulty
-// Total time spent
-// Status: Won/Lost

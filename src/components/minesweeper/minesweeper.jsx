@@ -12,8 +12,15 @@ function Minesweeper() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isGameWon, setIsGameWon] = useState(false);
   const [totalMines, setTotalMines] = useState(0);
+  const [timer, setTimer] = useState([]);
   const minesweeperContext = useContext(MinesweeperContext);
-  const { boardArea, row, column, hiddenMines } = minesweeperContext;
+  const {
+    boardArea,
+    row,
+    column,
+    hiddenMines,
+    difficulty,
+  } = minesweeperContext;
   const history = useHistory();
 
   // //////////////////////////////////
@@ -23,19 +30,21 @@ function Minesweeper() {
   // //////////////////////////////////
 
   useEffect(() => {
-    const flattedTiles = tiles.flat();
-    const tilesCount = flattedTiles.length;
-    const revealedTilesCount = revealedTiles.length;
-
-    if (tilesCount - revealedTilesCount === hiddenMines) {
-      setIsGameWon(true);
+    if (isGameOver || isGameWon) {
+      saveGame();
     }
+  }, [isGameOver, isGameWon]);
+
+  useEffect(() => {
+    setWinnedGame();
   }, [revealedTiles]);
 
   useEffect(() => {
     if (boardArea === 0) {
       history.push("/");
     }
+
+    startTimer();
     setTotalMines(hiddenMines);
     setRevealedTiles([]);
 
@@ -220,20 +229,31 @@ function Minesweeper() {
     return tileWithNearBombs;
   }
 
-  function saveGame(gameScore) {
-    // save game to localstorage with
-    // Start Time. Format: MM-DD-YYYY hh:mm (12hr format)
-    // End Time: Format: MM-DD-YYYY hh:mm (12hr format)
-    // Difficulty
-    // Total time spent
-    // Status: Won/Lost
-    // const gameScore = {
-    //   startTime: null,
-    //   endTime: null,
-    //   difficulty: null,
-    //   totalTime: null,
-    //   status: "won",
-    // };
+  function formatDate(date) {
+    const formattedDate = date.toLocaleString("en-US", { hour12: true }); // safari it's not a good browser and fails reading date with the "-" so i let this with / instead -
+    return formattedDate;
+  }
+
+  function getTimeSpent(start, stop) {
+    const timeSpent = (stop - start) / 1000;
+    return timeSpent;
+  }
+
+  function saveGame() {
+    const id = Date.now();
+    const startTime = formatDate(timer[0]);
+    const endTime = formatDate(timer[1]);
+    const timeSpent = `${getTimeSpent(timer[0], timer[1])} seconds`;
+    const status = isGameOver ? "Lost" : "Won";
+
+    const gameScore = {
+      id,
+      startTime,
+      endTime,
+      difficulty,
+      timeSpent,
+      status,
+    };
 
     const gameHistory = localStorage.getItem("gameHistory");
     const parsedGameHistory = JSON.parse(gameHistory) ?? [];
@@ -241,6 +261,33 @@ function Minesweeper() {
     const stringifiedGameHistory = JSON.stringify(parsedGameHistory);
     localStorage.setItem("gameHistory", stringifiedGameHistory);
   }
+
+  function setWinnedGame() {
+    const flattedTiles = tiles.flat();
+    const tilesCount = flattedTiles.length;
+    const revealedTilesCount = revealedTiles.length;
+
+    if (tilesCount - revealedTilesCount === hiddenMines) {
+      stopTimer();
+      setIsGameWon(true);
+    }
+  }
+
+  function isTileInRevealedTiles(tile) {
+    return revealedTiles.includes(tile.key);
+  }
+
+  function startTimer() {
+    const start = new Date();
+    setTimer([...timer, start]);
+  }
+
+  function stopTimer() {
+    const stop = new Date();
+    setTimer([...timer, stop]);
+  }
+
+  console.log(timer);
 
   //  //////////////////////////////////
   //  //////////////////////////////////
@@ -260,10 +307,6 @@ function Minesweeper() {
         setTiles(tilesWithNearBombs);
       }
     }
-  }
-
-  function isTileInRevealedTiles(tile) {
-    return revealedTiles.includes(tile.key);
   }
 
   function hanldeSetFlag(tile) {
@@ -300,6 +343,7 @@ function Minesweeper() {
 
   function handleSetGameOver() {
     setIsGameOver(true);
+    stopTimer();
   }
 
   function handleClickRetry() {

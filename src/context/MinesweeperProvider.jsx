@@ -1,6 +1,11 @@
-import React, { useReducer } from "react";
+import { useReducer } from "react";
+import PropTypes from "prop-types";
 import MinesweeperContext from "./minesweeperContext";
 import minesweeperReducer from "./minesweeperReducer";
+
+const propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 const MinesweeperProvider = (props) => {
   const initialState = {
@@ -8,9 +13,11 @@ const MinesweeperProvider = (props) => {
     row: 0,
     column: 0,
     hiddenMines: 0,
+    difficulty: "",
   };
 
   const [state, dispatch] = useReducer(minesweeperReducer, initialState);
+  const { children } = props;
 
   return (
     <MinesweeperContext.Provider
@@ -19,12 +26,14 @@ const MinesweeperProvider = (props) => {
         row: state.row,
         column: state.column,
         hiddenMines: state.hiddenMines,
-        dispatch: dispatch,
+        difficulty: state.difficulty,
+        dispatch,
       }}
     >
-      {props.children}
+      {children}
     </MinesweeperContext.Provider>
   );
 };
 
+MinesweeperProvider.propTypes = propTypes;
 export default MinesweeperProvider;
