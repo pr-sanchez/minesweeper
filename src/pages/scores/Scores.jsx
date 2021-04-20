@@ -65,6 +65,13 @@ function Scores() {
     reloadPage();
   }
 
+  function setStatusClassname(status) {
+    if (status.toLowerCase() === "lost") {
+      return styles.GameLost;
+    }
+    return styles.GameWin;
+  }
+
   //  //////////////////////////////////
   //  //////////////////////////////////
   //  ////////// RENDERERS /////////////
@@ -78,13 +85,28 @@ function Scores() {
 
     const mappedGameHistory = gameHistory.map(
       ({ id, startTime, endTime, difficulty, timeSpent, status }) => (
-        <div key={id} className={styles.Match}>
-          <div>start time: {startTime}</div>
-          <div>end time: {endTime}</div>
-          <div>difficulty: {difficulty}</div>
-          <div>Total time spent: {timeSpent}</div>
-          <div>Status: {status}</div>
-        </div>
+        <ul key={id} className={styles.Match}>
+          <li className={styles.MatchData}>
+            <b>start time:</b>
+            <div> {startTime}</div>
+          </li>
+          <li className={styles.MatchData}>
+            <b>end time: </b>
+            <div> {endTime}</div>
+          </li>
+          <li className={styles.MatchData}>
+            <b>difficulty:</b>
+            <div> {difficulty}</div>
+          </li>
+          <li className={styles.MatchData}>
+            <b>Total time spent:</b>
+            <div> {timeSpent}</div>
+          </li>
+          <li className={styles.MatchData}>
+            <b>Status:</b>
+            <div className={setStatusClassname(status)}>{status}</div>
+          </li>
+        </ul>
       )
     );
     return mappedGameHistory;
