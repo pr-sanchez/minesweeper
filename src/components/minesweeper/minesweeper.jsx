@@ -46,44 +46,30 @@ function Minesweeper() {
 
     startTimer();
     setTotalMines(hiddenMines);
-    setRevealedTiles([]);
 
+    const filledTiles = getFilledTiles();
+    const tilesWithRandomlyPlacedBombs = getTilesWithRandomlyPlacedBombs(
+      filledTiles
+    );
+    const board = setBoardMatriz(tilesWithRandomlyPlacedBombs);
+
+    setTiles(board);
+  }, []);
+
+  function getFilledTiles() {
     const filledTiles = [];
 
     for (let index = 0; index < boardArea; index += 1) {
       filledTiles.push({
         key: index,
-        data: "some configuration",
         hasBomb: false,
         hasFlag: false,
         nearBombsCount: 0,
       });
     }
 
-    const filledTilesCopy = [...filledTiles];
-    const shuffledFilledTiles = filledTilesCopy.sort(() => 0.5 - Math.random());
-
-    const randomPickOurTilesWithBombs = shuffledFilledTiles.slice(
-      0,
-      hiddenMines
-    );
-
-    const tilesWithRandomlyPlacedBombs = filledTiles.map((tile) => {
-      const findedTile = randomPickOurTilesWithBombs.find(
-        (item) => item.key === tile.key
-      );
-      if (findedTile != null) {
-        return {
-          ...findedTile,
-          hasBomb: true,
-        };
-      }
-      return tile;
-    });
-
-    const board = setBoardMatriz(tilesWithRandomlyPlacedBombs);
-    setTiles(board);
-  }, []);
+    return filledTiles;
+  }
 
   function setBoardMatriz(filledTiles) {
     const tilesCopy = [...filledTiles];
@@ -134,11 +120,7 @@ function Minesweeper() {
       );
 
       if (tilePosition !== -1) {
-        for (
-          let incremental = 0;
-          incremental < tilesContainer.length;
-          incremental += 1
-        ) {
+        for (let i = 0; i < tilesContainer.length; i += 1) {
           upperLeftDiagonal = previousRow?.[tilePosition - 1];
           aboveTile = previousRow?.[tilePosition];
           upperRightDiagonal = previousRow?.[tilePosition + 1];
@@ -169,6 +151,32 @@ function Minesweeper() {
     };
   }
 
+  function getTilesWithRandomlyPlacedBombs(filledTiles) {
+    const filledTilesCopy = [...filledTiles];
+
+    const shuffledFilledTiles = filledTilesCopy.sort(() => 0.5 - Math.random());
+
+    const randomPickOurTilesWithBombs = shuffledFilledTiles.slice(
+      0,
+      hiddenMines
+    );
+
+    const tilesWithRandomlyPlacedBombs = filledTiles.map((tile) => {
+      const findedTile = randomPickOurTilesWithBombs.find(
+        (item) => item.key === tile.key
+      );
+      if (findedTile != null) {
+        return {
+          ...findedTile,
+          hasBomb: true,
+        };
+      }
+      return tile;
+    });
+
+    return tilesWithRandomlyPlacedBombs;
+  }
+
   function findTileByKey(array, key) {
     let findedTile;
     for (let index = 0; index < array.length; index += 1) {
@@ -191,7 +199,7 @@ function Minesweeper() {
 
     const updateRevealedTiles = [];
 
-    if (!isTileInRevealedTiles(tile) && !tile.hasFlag) {
+    if (!isTileInRevealedTiles(tile)) {
       updateRevealedTiles.push(tile.key);
     }
 
@@ -295,14 +303,11 @@ function Minesweeper() {
 
   function handleRevealTile(tile) {
     if (!tile.hasFlag) {
-      if (!isTileInRevealedTiles(tile) && !tile.hasFlag) {
+      if (tile.hasBomb) {
         setRevealedTiles([...revealedTiles, tile.key]);
-      }
-
-      if (!tile.hasBomb) {
+      } else {
         revealTiles(tile);
-        const tilesWithNearBombs = getTileWithNearBombs(tile);
-        setTiles(tilesWithNearBombs);
+        setTiles(getTileWithNearBombs(tile));
       }
     }
   }
@@ -313,18 +318,15 @@ function Minesweeper() {
 
       const mappedTiles = tilesCopy.map((container) =>
         container.map((currentTile) => {
-          if (currentTile.hasFlag && currentTile.key === tile.key) {
-            setTotalMines(totalMines + 1);
-
-            return {
-              ...currentTile,
-              hasFlag: false,
-            };
-          }
-
           if (currentTile.key === tile.key) {
+            if (currentTile.hasFlag) {
+              setTotalMines(totalMines + 1);
+              return {
+                ...currentTile,
+                hasFlag: false,
+              };
+            }
             setTotalMines(totalMines - 1);
-
             return {
               ...currentTile,
               hasFlag: true,

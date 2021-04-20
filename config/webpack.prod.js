@@ -2,7 +2,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { merge } = require("webpack-merge");
 const common = require("./webpack.common");
 
-/**@type {import('webpack').Configuration} */
+/** @type {import('webpack').Configuration} */
 const productionConfiguration = {
   mode: "production",
   devtool: "source-map",

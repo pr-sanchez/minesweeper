@@ -137,7 +137,7 @@ function Setup() {
   function renderLevelButtons() {
     return (
       <div className={styles.ButtonsContainer}>
-        <h2> SELECT LEVEL:</h2>
+        <h2> SELECT LEVEL</h2>
         <Button className={styles.Button} onClick={handleSelectEasy}>
           EASY
         </Button>
