@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import MinesweeperContext from "../../context/minesweeperContext";
 import Button from "../../components/button";
-import { useHistory } from "react-router-dom";
 import styles from "./styles.modules.scss";
 
 function Setup() {
@@ -50,7 +50,7 @@ function Setup() {
   function handleSubmitCustomSetup() {
     const boardArea = row * column;
 
-    if (row == 0 || column == 0 || hiddenMines == 0) {
+    if (row === 0 || column === 0 || hiddenMines === 0) {
       setErrorMessage("None of the options could be in blank");
     } else if (boardArea > 1000) {
       setErrorMessage(
@@ -58,10 +58,10 @@ function Setup() {
       );
     } else {
       const payload = {
-        boardArea: boardArea,
-        row: parseInt(row),
-        column: parseInt(column),
-        hiddenMines: parseInt(hiddenMines),
+        boardArea,
+        row: Number(row),
+        column: Number(column),
+        hiddenMines: Number(hiddenMines),
       };
 
       dispatch("CUSTOM", payload);

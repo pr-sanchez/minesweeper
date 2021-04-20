@@ -287,8 +287,6 @@ function Minesweeper() {
     setTimer([...timer, stop]);
   }
 
-  console.log(timer);
-
   //  //////////////////////////////////
   //  //////////////////////////////////
   //  //////// EVENT HANDLERS //////////

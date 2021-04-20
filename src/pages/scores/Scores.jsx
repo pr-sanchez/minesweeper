@@ -9,9 +9,31 @@ function Scores() {
     setGameHistory(games);
   }, []);
 
+  function sortGameHistory(games) {
+    const sortedGameHistory = games.sort((a, b) => {
+      if (a.difficulty > b.difficulty) {
+        return 1;
+      }
+      if (a.difficulty < b.difficulty) {
+        return -1;
+      }
+      if (a.timeSpent > b.timeSpent) {
+        return 1;
+      }
+      if (a.timeSpent < b.timeSpent) {
+        return -1;
+      }
+      return 0;
+    });
+
+    return sortedGameHistory;
+  }
+
   function getGameHistory() {
     const parsedGameHistory = JSON.parse(localStorage.getItem("gameHistory"));
-    return parsedGameHistory;
+    const sortedGameHistory = sortGameHistory(parsedGameHistory);
+
+    return sortedGameHistory;
   }
 
   // function clearScores() {
