@@ -16,11 +16,11 @@ function Minesweeper() {
   const { boardArea, row, column, hiddenMines } = minesweeperContext;
   const history = useHistory();
 
-  ////////////////////////////////////
-  ////////////////////////////////////
-  //////// PRIVATE FUNCTIONS /////////
-  ////////////////////////////////////
-  ////////////////////////////////////
+  // //////////////////////////////////
+  // //////////////////////////////////
+  // ////// PRIVATE FUNCTIONS /////////
+  // //////////////////////////////////
+  // //////////////////////////////////
 
   useEffect(() => {
     const flattedTiles = tiles.flat();
@@ -39,9 +39,9 @@ function Minesweeper() {
     setTotalMines(hiddenMines);
     setRevealedTiles([]);
 
-    let filledTiles = [];
+    const filledTiles = [];
 
-    for (let index = 0; index < boardArea; index++) {
+    for (let index = 0; index < boardArea; index += 1) {
       filledTiles.push({
         key: index,
         data: "some configuration",
@@ -78,23 +78,21 @@ function Minesweeper() {
 
   function setBoardMatriz(filledTiles) {
     const tilesCopy = [...filledTiles];
-    let tableRowList = [];
+    const tableRowList = [];
     let tableColumns = [];
     let tilesCount = 0;
 
-    for (let index = 0; index < row; index++) {
-      for (let iterator = 0; iterator < column; iterator++) {
+    for (let index = 0; index < row; index += 1) {
+      for (let iterator = 0; iterator < column; iterator += 1) {
         const tile = tilesCopy[tilesCount];
         tableColumns = [...tableColumns, tile];
-        tilesCount++;
+        tilesCount += 1;
       }
       tableRowList.push(tableColumns);
       tableColumns = [];
     }
 
-    if (tableRowList.length > 0) {
-      return tableRowList;
-    }
+    return tableRowList;
   }
 
   function getCoords(tile) {
@@ -107,33 +105,39 @@ function Minesweeper() {
     let aboveTile;
     let belowTile;
     let nearBombsCount = 0;
-    let coords = [];
+    const coords = [];
 
-    function pushInCoordsAndSumBombCount(tile) {
-      if (tile != null) {
-        coords.push(tile.key);
-        if (tile.hasBomb && !isTileInRevealedTiles(tile)) {
-          nearBombsCount++;
+    function pushInCoordsAndSumBombCount(coord) {
+      if (coord != null) {
+        coords.push(coord.key);
+        if (coord.hasBomb && !isTileInRevealedTiles(coord)) {
+          nearBombsCount += 1;
         }
       }
     }
 
-    for (let index = 0; index < tiles.length; index++) {
-      const row = tiles[index];
+    for (let index = 0; index < tiles.length; index += 1) {
+      const tilesContainer = tiles[index];
       const nextRow = tiles[index + 1];
       const previousRow = tiles[index - 1];
-      const tilePosition = row.findIndex((column) => column.key === tile.key);
+      const tilePosition = tilesContainer.findIndex(
+        (item) => item.key === tile.key
+      );
 
-      if (tilePosition != -1) {
-        for (let incremental = 0; incremental < row.length; incremental++) {
+      if (tilePosition !== -1) {
+        for (
+          let incremental = 0;
+          incremental < tilesContainer.length;
+          incremental += 1
+        ) {
           upperLeftDiagonal = previousRow?.[tilePosition - 1];
           aboveTile = previousRow?.[tilePosition];
           upperRightDiagonal = previousRow?.[tilePosition + 1];
-          nextPosition = row[tilePosition + 1];
+          nextPosition = tilesContainer[tilePosition + 1];
           lowerRightDiagonal = nextRow?.[tilePosition + 1];
           belowTile = nextRow?.[tilePosition];
           lowerLeftDiagonal = nextRow?.[tilePosition - 1];
-          previousPosition = row[tilePosition - 1];
+          previousPosition = tilesContainer[tilePosition - 1];
 
           pushInCoordsAndSumBombCount(upperLeftDiagonal);
           pushInCoordsAndSumBombCount(aboveTile);
@@ -151,19 +155,19 @@ function Minesweeper() {
     }
 
     return {
-      coords: coords,
-      nearBombsCount: nearBombsCount,
+      coords,
+      nearBombsCount,
     };
   }
 
   function findTileByKey(array, key) {
     let findedTile;
-    for (let index = 0; index < array.length; index++) {
-      const row = array[index];
-      for (let z = 0; z < row.length; z++) {
-        const column = row[z];
-        if (column.key === key) {
-          findedTile = column;
+    for (let index = 0; index < array.length; index += 1) {
+      const container = array[index];
+      for (let z = 0; z < container.length; z += 1) {
+        const currentTile = container[z];
+        if (currentTile.key === key) {
+          findedTile = currentTile;
           break;
         }
       }
@@ -176,19 +180,19 @@ function Minesweeper() {
     const coordsAndNearBombsCount = getCoords(tile);
     const { nearBombsCount, coords } = coordsAndNearBombsCount;
 
-    let updateRevealedTiles = [];
+    const updateRevealedTiles = [];
 
     if (!isTileInRevealedTiles(tile) && !tile.hasFlag) {
       updateRevealedTiles.push(tile.key);
     }
 
     if (nearBombsCount === 0) {
-      for (let index = 0; index < coords.length; index++) {
-        const column = coords[index];
-        const findedTile = findTileByKey(tiles, column);
+      for (let index = 0; index < coords.length; index += 1) {
+        const revealedTile = coords[index];
+        const findedTile = findTileByKey(tiles, revealedTile);
 
         if (!isTileInRevealedTiles(findedTile) && !findedTile.hasFlag) {
-          updateRevealedTiles.push(column);
+          updateRevealedTiles.push(revealedTile);
         }
       }
     }
@@ -201,23 +205,23 @@ function Minesweeper() {
     const coordsAndNearBombsCount = getCoords(tile);
     const { nearBombsCount } = coordsAndNearBombsCount;
 
-    const tileWithNearBombs = tilesCopy.map((row) => {
-      return row.map((column) => {
-        if (column.key === tile.key) {
+    const tileWithNearBombs = tilesCopy.map((container) =>
+      container.map((currentTile) => {
+        if (currentTile.key === tile.key) {
           return {
-            ...column,
-            nearBombsCount: nearBombsCount,
+            ...currentTile,
+            nearBombsCount,
           };
         }
-        return column;
-      });
-    });
+        return currentTile;
+      })
+    );
 
     return tileWithNearBombs;
   }
 
   function saveGame(gameScore) {
-    //save game to localstorage with
+    // save game to localstorage with
     // Start Time. Format: MM-DD-YYYY hh:mm (12hr format)
     // End Time: Format: MM-DD-YYYY hh:mm (12hr format)
     // Difficulty
@@ -237,11 +241,12 @@ function Minesweeper() {
     const stringifiedGameHistory = JSON.stringify(parsedGameHistory);
     localStorage.setItem("gameHistory", stringifiedGameHistory);
   }
-  ////////////////////////////////////
-  ////////////////////////////////////
-  ////////// EVENT HANDLERS //////////
-  ////////////////////////////////////
-  ////////////////////////////////////
+
+  //  //////////////////////////////////
+  //  //////////////////////////////////
+  //  //////// EVENT HANDLERS //////////
+  //  //////////////////////////////////
+  //  //////////////////////////////////
 
   function handleRevealTile(tile) {
     if (!tile.hasFlag) {
@@ -265,29 +270,29 @@ function Minesweeper() {
     if (!isTileInRevealedTiles(tile)) {
       const tilesCopy = [...tiles];
 
-      const mappedTiles = tilesCopy.map((row) => {
-        return row.map((column) => {
-          if (column.hasFlag && column.key === tile.key) {
+      const mappedTiles = tilesCopy.map((container) =>
+        container.map((currentTile) => {
+          if (currentTile.hasFlag && currentTile.key === tile.key) {
             setTotalMines(totalMines + 1);
 
             return {
-              ...column,
+              ...currentTile,
               hasFlag: false,
             };
           }
 
-          if (column.key === tile.key) {
+          if (currentTile.key === tile.key) {
             setTotalMines(totalMines - 1);
 
             return {
-              ...column,
+              ...currentTile,
               hasFlag: true,
             };
           }
 
-          return column;
-        });
-      });
+          return currentTile;
+        })
+      );
 
       setTiles(mappedTiles);
     }
@@ -305,11 +310,11 @@ function Minesweeper() {
     history.push("/scores");
   }
 
-  ////////////////////////////////////
-  ////////////////////////////////////
-  //////////// RENDERERS /////////////
-  ////////////////////////////////////
-  ////////////////////////////////////
+  //  //////////////////////////////////
+  //  //////////////////////////////////
+  //  ////////// RENDERERS /////////////
+  //  //////////////////////////////////
+  //  //////////////////////////////////
 
   function renderTableRow(tableColumn, index) {
     return (
@@ -333,12 +338,14 @@ function Minesweeper() {
   }
 
   function renderBoard() {
-    if (tiles.length > 0 == false) {
+    if (tiles.length > 0 === false) {
       return null;
     }
 
-    const board = tiles.map((row, iterator) => {
-      const renderedRow = row.map((column) => renderTableColumn(column));
+    const board = tiles.map((container, iterator) => {
+      const renderedRow = container.map((currentTile) =>
+        renderTableColumn(currentTile)
+      );
       return renderTableRow(renderedRow, iterator);
     });
 

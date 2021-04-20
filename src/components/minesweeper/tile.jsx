@@ -1,4 +1,18 @@
+import PropTypes from "prop-types";
 import styles from "./minesweeper.module.scss";
+
+const propTypes = {
+  tile: PropTypes.shape({
+    hasBomb: PropTypes.bool,
+    key: PropTypes.number,
+    nearBombsCount: PropTypes.number,
+    hasFlag: PropTypes.bool,
+  }).isRequired,
+  revealedTiles: PropTypes.arrayOf(PropTypes.number).isRequired,
+  onRevealTile: PropTypes.func.isRequired,
+  onSetFlag: PropTypes.func.isRequired,
+  onSetGameOver: PropTypes.func.isRequired,
+};
 
 function Tile({ tile, onRevealTile, onSetFlag, onSetGameOver, revealedTiles }) {
   function handleTileClick() {
@@ -34,15 +48,18 @@ function Tile({ tile, onRevealTile, onSetFlag, onSetGameOver, revealedTiles }) {
   }
 
   return (
-    <div
+    <button
+      type="button"
       key={tile.key}
       className={styles.Tile}
       onClick={handleTileClick}
       onContextMenu={handleSetFlag}
+      onKeyPress={handleTileClick}
     >
       {renderTileMessage()}
-    </div>
+    </button>
   );
 }
 
+Tile.propTypes = propTypes;
 export default Tile;
