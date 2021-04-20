@@ -19,11 +19,11 @@ function Tile({ tile, onRevealTile, onSetFlag, onSetGameOver, revealedTiles }) {
         return "💣";
       }
 
-      return "✅";
-    }
+      if (tile.nearBombsCount > 0) {
+        return tile.nearBombsCount;
+      }
 
-    if (tile.nearBombsCount > 0) {
-      return tile.nearBombsCount;
+      return "✅";
     }
 
     if (tile.hasFlag) {

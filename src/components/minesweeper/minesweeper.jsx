@@ -29,25 +29,6 @@ function Minesweeper() {
 
     if (tilesCount - revealedTilesCount === hiddenMines) {
       setIsGameWon(true);
-
-      const gameScore = {
-        startTime: null,
-        endTime: null,
-        difficulty: null,
-        totalTime: null,
-        status: "won",
-      };
-
-      const gameHistory = localStorage.getItem("gameHistory");
-      const parsedGameHistory = JSON.parse(gameHistory) ?? [];
-      parsedGameHistory.push(gameScore);
-      localStorage.setItem("gameHistory", parsedGameHistory);
-      //save game to localstorage with
-      // Start Time. Format: MM-DD-YYYY hh:mm (12hr format)
-      // End Time: Format: MM-DD-YYYY hh:mm (12hr format)
-      // Difficulty
-      // Total time spent
-      // Status: Won/Lost
     }
   }, [revealedTiles]);
 
@@ -131,7 +112,7 @@ function Minesweeper() {
     function pushInCoordsAndSumBombCount(tile) {
       if (tile != null) {
         coords.push(tile.key);
-        if (tile.hasBomb && !revealedTiles.includes(tile.key)) {
+        if (tile.hasBomb && !isTileInRevealedTiles(tile)) {
           nearBombsCount++;
         }
       }
@@ -191,14 +172,13 @@ function Minesweeper() {
     return findedTile;
   }
 
-  function getTilesWithNearBombs(tile) {
-    const tilesCopy = [...tiles];
+  function revealTiles(tile) {
     const coordsAndNearBombsCount = getCoords(tile);
     const { nearBombsCount, coords } = coordsAndNearBombsCount;
 
     let updateRevealedTiles = [];
 
-    if (!revealedTiles.includes(tile.key) && !tile.hasFlag) {
+    if (!isTileInRevealedTiles(tile) && !tile.hasFlag) {
       updateRevealedTiles.push(tile.key);
     }
 
@@ -207,16 +187,23 @@ function Minesweeper() {
         const column = coords[index];
         const findedTile = findTileByKey(tiles, column);
 
-        if (!revealedTiles.includes(findedTile.key) && !findedTile.hasFlag) {
+        if (!isTileInRevealedTiles(findedTile) && !findedTile.hasFlag) {
           updateRevealedTiles.push(column);
         }
       }
-      setRevealedTiles([...revealedTiles, ...updateRevealedTiles]);
     }
 
-    const tilesWithNearBombs = tilesCopy.map((row) => {
+    setRevealedTiles([...revealedTiles, ...updateRevealedTiles]);
+  }
+
+  function getTileWithNearBombs(tile) {
+    const tilesCopy = [...tiles];
+    const coordsAndNearBombsCount = getCoords(tile);
+    const { nearBombsCount } = coordsAndNearBombsCount;
+
+    const tileWithNearBombs = tilesCopy.map((row) => {
       return row.map((column) => {
-        if (coords.includes(column.key)) {
+        if (column.key === tile.key) {
           return {
             ...column,
             nearBombsCount: nearBombsCount,
@@ -226,7 +213,29 @@ function Minesweeper() {
       });
     });
 
-    return tilesWithNearBombs;
+    return tileWithNearBombs;
+  }
+
+  function saveGame(gameScore) {
+    //save game to localstorage with
+    // Start Time. Format: MM-DD-YYYY hh:mm (12hr format)
+    // End Time: Format: MM-DD-YYYY hh:mm (12hr format)
+    // Difficulty
+    // Total time spent
+    // Status: Won/Lost
+    // const gameScore = {
+    //   startTime: null,
+    //   endTime: null,
+    //   difficulty: null,
+    //   totalTime: null,
+    //   status: "won",
+    // };
+
+    const gameHistory = localStorage.getItem("gameHistory");
+    const parsedGameHistory = JSON.parse(gameHistory) ?? [];
+    parsedGameHistory.push(gameScore);
+    const stringifiedGameHistory = JSON.stringify(parsedGameHistory);
+    localStorage.setItem("gameHistory", stringifiedGameHistory);
   }
   ////////////////////////////////////
   ////////////////////////////////////
@@ -236,44 +245,52 @@ function Minesweeper() {
 
   function handleRevealTile(tile) {
     if (!tile.hasFlag) {
-      if (!revealedTiles.includes(tile.key) && !tile.hasFlag) {
+      if (!isTileInRevealedTiles(tile) && !tile.hasFlag) {
         setRevealedTiles([...revealedTiles, tile.key]);
       }
 
-      const tilesWithNearBombs = getTilesWithNearBombs(tile);
-
-      setTiles(tilesWithNearBombs);
+      if (!tile.hasBomb) {
+        revealTiles(tile);
+        const tilesWithNearBombs = getTileWithNearBombs(tile);
+        setTiles(tilesWithNearBombs);
+      }
     }
   }
 
+  function isTileInRevealedTiles(tile) {
+    return revealedTiles.includes(tile.key);
+  }
+
   function hanldeSetFlag(tile) {
-    const tilesCopy = [...tiles];
+    if (!isTileInRevealedTiles(tile)) {
+      const tilesCopy = [...tiles];
 
-    const mappedTiles = tilesCopy.map((row) => {
-      return row.map((column) => {
-        if (column.hasFlag && column.key === tile.key) {
-          setTotalMines(totalMines + 1);
+      const mappedTiles = tilesCopy.map((row) => {
+        return row.map((column) => {
+          if (column.hasFlag && column.key === tile.key) {
+            setTotalMines(totalMines + 1);
 
-          return {
-            ...column,
-            hasFlag: false,
-          };
-        }
+            return {
+              ...column,
+              hasFlag: false,
+            };
+          }
 
-        if (column.key === tile.key) {
-          setTotalMines(totalMines - 1);
+          if (column.key === tile.key) {
+            setTotalMines(totalMines - 1);
 
-          return {
-            ...column,
-            hasFlag: true,
-          };
-        }
+            return {
+              ...column,
+              hasFlag: true,
+            };
+          }
 
-        return column;
+          return column;
+        });
       });
-    });
 
-    setTiles(mappedTiles);
+      setTiles(mappedTiles);
+    }
   }
 
   function handleSetGameOver() {
@@ -378,7 +395,6 @@ function Minesweeper() {
     <div>
       {renderGameOverModal()}
       {renderYouWonModal()}
-
       {renderTotalMines()}
       {renderBoard()}
     </div>

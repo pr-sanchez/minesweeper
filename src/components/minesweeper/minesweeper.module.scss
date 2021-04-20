@@ -4,7 +4,7 @@
   left: 0;
   height: 100%;
   width: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.6);
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -40,7 +40,7 @@
     .Tile {
       border: 2px solid #404040;
       margin: 2px;
-      background: red;
+      background: #c6c6c6;
       color: #fff;
       cursor: pointer;
       width: 50px;

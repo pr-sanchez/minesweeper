@@ -6,9 +6,12 @@ function Scores() {
   }, []);
 
   function getGameHistory() {
-    const gameHistoryJson = localStorage.getItem("gameHistory");
-    const parsedGameHistory = JSON.parse(gameHistoryJson);
+    const parsedGameHistory = JSON.parse(localStorage.getItem("gameHistory"));
     return parsedGameHistory;
+  }
+
+  function clearScores() {
+    localStorage.removeItem("gameHistory");
   }
 
   return "scores";
