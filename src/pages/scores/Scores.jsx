@@ -80,7 +80,11 @@ function Scores() {
 
   function renderScores() {
     if (!hasGameHistory()) {
-      return <h1>No games found! Go and play some games buddy!</h1>;
+      return (
+        <h1 title="noGamesFoundText">
+          No games found! Go and play some games buddy!
+        </h1>
+      );
     }
 
     const mappedGameHistory = gameHistory.map(
@@ -118,7 +122,11 @@ function Scores() {
     }
 
     return (
-      <Button className={styles.Button} onClick={handleClearScores}>
+      <Button
+        title="clearGameHistory"
+        className={styles.Button}
+        onClick={handleClearScores}
+      >
         Clear game history
       </Button>
     );

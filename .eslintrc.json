@@ -7,8 +7,18 @@
   "plugins": ["prettier"],
   "rules": {
     "react/react-in-jsx-scope": "off",
-    "no-use-before-define": "off"
+    "no-use-before-define": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
   },
+  "overrides": [
+    {
+      "files": ["*.test.js"],
+      "rules": {
+        "no-unused-expressions": "off",
+        "no-undef": "off"
+      }
+    }
+  ],
   "globals": {
     "localStorage": true,
     "fetch": true

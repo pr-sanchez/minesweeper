@@ -95,10 +95,11 @@ function Setup() {
     }
 
     return (
-      <div className={styles.CustomSetupContainer}>
+      <div title="customSetupForm" className={styles.CustomSetupContainer}>
         <h3 className={styles.ErrorMessage}>{errorMessage}</h3>
         <h4> please enter the numbers of rows:</h4>
         <input
+          title="boardRow"
           className={styles.Input}
           onChange={handleSetRow}
           value={row}
@@ -109,6 +110,7 @@ function Setup() {
 
         <h4> please enter the numbers of columns:</h4>
         <input
+          title="boardColumn"
           className={styles.Input}
           onChange={handleSetColumn}
           value={column}
@@ -119,6 +121,7 @@ function Setup() {
 
         <h4> please enter the number of hidden mines:</h4>
         <input
+          title="boardHiddenMines"
           className={styles.Input}
           onChange={handleSetHiddenMines}
           value={hiddenMines}
@@ -127,7 +130,11 @@ function Setup() {
           max={row * column - 2}
         />
 
-        <Button className={styles.Button} onClick={handleSubmitCustomSetup}>
+        <Button
+          title="customSetupSubmitButton"
+          className={styles.Button}
+          onClick={handleSubmitCustomSetup}
+        >
           SUBMIT
         </Button>
       </div>
@@ -147,7 +154,11 @@ function Setup() {
         <Button className={styles.Button} onClick={handleSelectHard}>
           HARD
         </Button>
-        <Button className={styles.Button} onClick={handleSetIsCustom}>
+        <Button
+          title="customSetupButton"
+          className={styles.Button}
+          onClick={handleSetIsCustom}
+        >
           CUSTOM
         </Button>
       </div>

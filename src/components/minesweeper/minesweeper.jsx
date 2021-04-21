@@ -304,12 +304,10 @@ function Minesweeper() {
   //  //////////////////////////////////
 
   function handleRevealTile(tile) {
-    if (!tile.hasFlag) {
-      if (tile.hasBomb) {
-        setRevealedTiles([...revealedTiles, tile.key]);
-      } else if (tile.nearBombsCount > 0 === false) {
-        revealTiles(tile);
-      }
+    if (tile.hasBomb) {
+      setRevealedTiles([...revealedTiles, tile.key]);
+    } else if (tile.nearBombsCount > 0 === false) {
+      revealTiles(tile);
     }
   }
 

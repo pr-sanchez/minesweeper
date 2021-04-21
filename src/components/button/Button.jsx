@@ -5,20 +5,23 @@ import styles from "./styles.modules.scss";
 const defaultProps = {
   className: null,
   onClick: () => {},
+  title: "",
 };
 
 const propTypes = {
   className: PropTypes.string,
   onClick: PropTypes.func,
   children: PropTypes.node.isRequired,
+  title: PropTypes.string,
 };
 
-function Button({ className, onClick, children }) {
+function Button({ className, onClick, title, children }) {
   function handleClick() {
     onClick();
   }
   return (
     <button
+      title={title}
       type="button"
       onClick={handleClick}
       className={classNames(styles.Button, className)}

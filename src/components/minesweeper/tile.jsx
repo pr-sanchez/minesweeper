@@ -17,9 +17,11 @@ const propTypes = {
 
 function Tile({ tile, onRevealTile, onSetFlag, onSetGameOver, revealedTiles }) {
   function handleTileClick() {
-    onRevealTile(tile);
-    if (tile.hasBomb) {
-      onSetGameOver(true);
+    if (!tile.hasFlag) {
+      onRevealTile(tile);
+      if (tile.hasBomb) {
+        onSetGameOver(true);
+      }
     }
   }
 
