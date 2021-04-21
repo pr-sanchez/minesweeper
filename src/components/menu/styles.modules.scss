@@ -5,11 +5,24 @@
   background: #696666;
   align-items: center;
   height: 50px;
-  .Item {
-    &:hover {
-      color: #ccc;
+
+  .ItemsContainer {
+    width: 95%;
+    display: flex;
+    justify-content: space-around;
+    .Item {
+      &:hover {
+        color: #ccc;
+      }
+      color: #fff;
+      text-decoration: none;
     }
-    color: #fff;
-    text-decoration: none;
+  }
+
+  .GithuLink {
+    display: flex;
+    width: auto;
+    justify-content: flex-end;
+    margin-right: 1%;
   }
 }
