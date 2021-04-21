@@ -1,4 +1,4 @@
-import { render, cleanup, fireEvent } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import Setup from "../src/pages/setup";
 
 import MinesweeperProvider from "../src/context/MinesweeperProvider";
@@ -13,8 +13,6 @@ function renderWithContext(component) {
     ),
   };
 }
-
-afterEach(cleanup);
 
 it("renders the custom setup", () => {
   const { queryByTitle } = renderWithContext(<Setup />);
