@@ -4,6 +4,9 @@ const common = require("./webpack.common");
 
 /** @type {import('webpack').Configuration} */
 const productionConfiguration = {
+  output: {
+    publicPath: "./",
+  },
   mode: "production",
   devtool: "source-map",
   optimization: {

@@ -4,7 +4,7 @@ const path = require("path");
 
 /** @type {import('webpack').Configuration} */
 module.exports = {
-  entry: "./src/index.jsx",
+  entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "../build"),
     filename: "[name].[contenthash].js",

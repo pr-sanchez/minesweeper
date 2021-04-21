@@ -36,7 +36,9 @@ function Minesweeper() {
   }, [isGameOver, isGameWon]);
 
   useEffect(() => {
-    setWinnedGame();
+    if (!isGameOver) {
+      setWinnedGame();
+    }
   }, [revealedTiles]);
 
   useEffect(() => {
@@ -195,30 +197,34 @@ function Minesweeper() {
 
   function revealTiles(tile) {
     const coordsAndNearBombsCount = getCoords(tile);
-    const { nearBombsCount, coords } = coordsAndNearBombsCount;
+    const { coords } = coordsAndNearBombsCount;
 
+    let tilesWithBomb = [...tiles];
     const updateRevealedTiles = [];
 
     if (!isTileInRevealedTiles(tile)) {
       updateRevealedTiles.push(tile.key);
     }
 
-    if (nearBombsCount === 0) {
-      for (let index = 0; index < coords.length; index += 1) {
-        const revealedTile = coords[index];
-        const findedTile = findTileByKey(tiles, revealedTile);
+    for (let index = 0; index < coords.length; index += 1) {
+      const revealedTile = coords[index];
+      const findedTile = findTileByKey(tiles, revealedTile);
 
-        if (!isTileInRevealedTiles(findedTile) && !findedTile.hasFlag) {
+      tilesWithBomb = getTileWithNearBombs(findedTile, tilesWithBomb);
+
+      if (!isTileInRevealedTiles(findedTile) && !findedTile.hasFlag) {
+        if (!findedTile.hasBomb) {
           updateRevealedTiles.push(revealedTile);
         }
       }
     }
 
+    setTiles(tilesWithBomb);
     setRevealedTiles([...revealedTiles, ...updateRevealedTiles]);
   }
 
-  function getTileWithNearBombs(tile) {
-    const tilesCopy = [...tiles];
+  function getTileWithNearBombs(tile, tilesWithBomb) {
+    const tilesCopy = [...tilesWithBomb];
     const coordsAndNearBombsCount = getCoords(tile);
     const { nearBombsCount } = coordsAndNearBombsCount;
 
@@ -307,7 +313,6 @@ function Minesweeper() {
         setRevealedTiles([...revealedTiles, tile.key]);
       } else {
         revealTiles(tile);
-        setTiles(getTileWithNearBombs(tile));
       }
     }
   }
