@@ -102,7 +102,7 @@ function Minesweeper() {
     let aboveTile;
     let belowTile;
     let nearBombsCount = 0;
-    const coords = [];
+    const coords = [tile.key];
 
     function pushInCoordsAndSumBombCount(coord) {
       if (coord != null) {
