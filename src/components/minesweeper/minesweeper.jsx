@@ -311,7 +311,7 @@ function Minesweeper() {
     if (!tile.hasFlag) {
       if (tile.hasBomb) {
         setRevealedTiles([...revealedTiles, tile.key]);
-      } else {
+      } else if (tile.nearBombsCount > 0 === false) {
         revealTiles(tile);
       }
     }
