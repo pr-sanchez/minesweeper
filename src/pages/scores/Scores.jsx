@@ -126,8 +126,8 @@ function Scores() {
 
   return (
     <div className={styles.ScoreTable}>
-      {renderScores()}
       {renderClearButton()}
+      {renderScores()}
     </div>
   );
 }
