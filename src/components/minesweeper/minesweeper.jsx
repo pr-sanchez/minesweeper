@@ -202,10 +202,6 @@ function Minesweeper() {
     let tilesWithBomb = [...tiles];
     const updateRevealedTiles = [];
 
-    if (!isTileInRevealedTiles(tile)) {
-      updateRevealedTiles.push(tile.key);
-    }
-
     for (let index = 0; index < coords.length; index += 1) {
       const revealedTile = coords[index];
       const findedTile = findTileByKey(tiles, revealedTile);
