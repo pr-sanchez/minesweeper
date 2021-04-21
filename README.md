@@ -4,11 +4,11 @@ Hello there! This Minesweeper video game it's a personal project I built in orde
 
 # Project
 
-I'ts a "copy" of the Minesweeper game do it at my way, I'll be updating this project during these months until I feel good with my code structure, readability, reusability and good practices in React.js and JavaScript.
+It's a "copy" of the Minesweeper game coded at my way, I'll be updating this project during these months until I feel good with my code structure, in terms of, readability, reusability and good practices in React.js and JavaScript.
 
 # App
 
-For now it's in GithubPages, but soon i'll move it to firebase because GithubPages don't support SPAs natively.
+For now, it's in GithubPages, but soon I'll move it to Firebase because GithubPages don't support SPAs natively.
 [View online](https://github.com/pr-sanchez/minesweeper)
 
 # Collaboration
