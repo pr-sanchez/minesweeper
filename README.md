@@ -9,7 +9,7 @@ It's a "copy" of the Minesweeper game coded at my way, I'll be updating this pro
 # App
 
 For now, it's in GithubPages, but soon I'll move it to Firebase because GithubPages don't support SPAs natively.
-[View online](https://github.com/pr-sanchez/minesweeper)
+[View online](https://pr-sanchez.github.io/minesweeper/)
 
 # Collaboration
 
