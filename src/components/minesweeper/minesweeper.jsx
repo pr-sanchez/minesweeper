@@ -156,7 +156,12 @@ function Minesweeper() {
   function getTilesWithRandomlyPlacedBombs(filledTiles) {
     const filledTilesCopy = [...filledTiles];
 
-    const shuffledFilledTiles = filledTilesCopy.sort(() => 0.5 - Math.random());
+    // Fisher-Yates shuffle for uniform random distribution
+    for (let i = filledTilesCopy.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [filledTilesCopy[i], filledTilesCopy[j]] = [filledTilesCopy[j], filledTilesCopy[i]];
+    }
+    const shuffledFilledTiles = filledTilesCopy;
 
     const randomPickOurTilesWithBombs = shuffledFilledTiles.slice(
       0,
@@ -208,10 +213,8 @@ function Minesweeper() {
 
       tilesWithBomb = getTileWithNearBombs(findedTile, tilesWithBomb);
 
-      if (!isTileInRevealedTiles(findedTile) && !findedTile.hasFlag) {
-        if (!findedTile.hasBomb) {
-          updateRevealedTiles.push(revealedTile);
-        }
+      if (!isTileInRevealedTiles(findedTile) && !findedTile.hasBomb) {
+        updateRevealedTiles.push(revealedTile);
       }
     }
 
@@ -305,9 +308,16 @@ function Minesweeper() {
 
   function handleRevealTile(tile) {
     if (tile.hasBomb) {
-      setRevealedTiles([...revealedTiles, tile.key]);
-    } else if (tile.nearBombsCount > 0 === false) {
+      // Reveal all bombs on game over
+      const allBombKeys = tiles.flat()
+        .filter((t) => t.hasBomb)
+        .map((t) => t.key);
+      setRevealedTiles([...revealedTiles, ...allBombKeys]);
+    } else if (tile.nearBombsCount === 0) {
       revealTiles(tile);
+    } else {
+      // Numbered tile — reveal just this tile
+      setRevealedTiles([...revealedTiles, tile.key]);
     }
   }
 
