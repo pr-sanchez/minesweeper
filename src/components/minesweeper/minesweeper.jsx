@@ -54,8 +54,9 @@ function Minesweeper() {
       filledTiles
     );
     const board = setBoardMatriz(tilesWithRandomlyPlacedBombs);
+    const boardWithCounts = computeNearBombsCounts(board);
 
-    setTiles(board);
+    setTiles(boardWithCounts);
   }, []);
 
   function getFilledTiles() {
@@ -92,65 +93,33 @@ function Minesweeper() {
     return tableRowList;
   }
 
-  function getCoords(tile) {
-    let nextPosition;
-    let previousPosition;
-    let upperRightDiagonal;
-    let upperLeftDiagonal;
-    let lowerRightDiagonal;
-    let lowerLeftDiagonal;
-    let aboveTile;
-    let belowTile;
-    let nearBombsCount = 0;
-    const coords = [tile.key];
-
-    function pushInCoordsAndSumBombCount(coord) {
-      if (coord != null) {
-        coords.push(coord.key);
-        if (coord.hasBomb && !isTileInRevealedTiles(coord)) {
-          nearBombsCount += 1;
-        }
-      }
-    }
-
-    for (let index = 0; index < tiles.length; index += 1) {
-      const tilesContainer = tiles[index];
-      const nextRow = tiles[index + 1];
-      const previousRow = tiles[index - 1];
-      const tilePosition = tilesContainer.findIndex(
-        (item) => item.key === tile.key
-      );
-
-      if (tilePosition !== -1) {
-        for (let i = 0; i < tilesContainer.length; i += 1) {
-          upperLeftDiagonal = previousRow?.[tilePosition - 1];
-          aboveTile = previousRow?.[tilePosition];
-          upperRightDiagonal = previousRow?.[tilePosition + 1];
-          nextPosition = tilesContainer[tilePosition + 1];
-          lowerRightDiagonal = nextRow?.[tilePosition + 1];
-          belowTile = nextRow?.[tilePosition];
-          lowerLeftDiagonal = nextRow?.[tilePosition - 1];
-          previousPosition = tilesContainer[tilePosition - 1];
-
-          pushInCoordsAndSumBombCount(upperLeftDiagonal);
-          pushInCoordsAndSumBombCount(aboveTile);
-          pushInCoordsAndSumBombCount(upperRightDiagonal);
-          pushInCoordsAndSumBombCount(nextPosition);
-          pushInCoordsAndSumBombCount(lowerRightDiagonal);
-          pushInCoordsAndSumBombCount(belowTile);
-          pushInCoordsAndSumBombCount(lowerLeftDiagonal);
-          pushInCoordsAndSumBombCount(previousPosition);
-
-          break;
+  function getNeighbors(board, tileKey) {
+    const neighbors = [];
+    for (let r = 0; r < board.length; r += 1) {
+      const col = board[r].findIndex((t) => t.key === tileKey);
+      if (col !== -1) {
+        for (let dr = -1; dr <= 1; dr += 1) {
+          for (let dc = -1; dc <= 1; dc += 1) {
+            if (dr === 0 && dc === 0) continue;
+            const neighbor = board[r + dr]?.[col + dc];
+            if (neighbor) neighbors.push(neighbor);
+          }
         }
         break;
       }
     }
+    return neighbors;
+  }
 
-    return {
-      coords,
-      nearBombsCount,
-    };
+  function computeNearBombsCounts(board) {
+    return board.map((rowArr) =>
+      rowArr.map((tile) => {
+        if (tile.hasBomb) return tile;
+        const neighbors = getNeighbors(board, tile.key);
+        const nearBombsCount = neighbors.filter((n) => n.hasBomb).length;
+        return { ...tile, nearBombsCount };
+      })
+    );
   }
 
   function getTilesWithRandomlyPlacedBombs(filledTiles) {
@@ -184,62 +153,31 @@ function Minesweeper() {
     return tilesWithRandomlyPlacedBombs;
   }
 
-  function findTileByKey(array, key) {
-    let findedTile;
-    for (let index = 0; index < array.length; index += 1) {
-      const container = array[index];
-      for (let z = 0; z < container.length; z += 1) {
-        const currentTile = container[z];
-        if (currentTile.key === key) {
-          findedTile = currentTile;
-          break;
-        }
-      }
-    }
-
-    return findedTile;
-  }
 
   function revealTiles(tile) {
-    const coordsAndNearBombsCount = getCoords(tile);
-    const { coords } = coordsAndNearBombsCount;
+    const newRevealed = [];
+    const visited = new Set(revealedTiles);
+    const queue = [tile];
 
-    let tilesWithBomb = [...tiles];
-    const updateRevealedTiles = [];
+    while (queue.length > 0) {
+      const current = queue.shift();
+      if (visited.has(current.key) || current.hasBomb) {
+        continue;
+      }
+      visited.add(current.key);
+      newRevealed.push(current.key);
 
-    for (let index = 0; index < coords.length; index += 1) {
-      const revealedTile = coords[index];
-      const findedTile = findTileByKey(tiles, revealedTile);
-
-      tilesWithBomb = getTileWithNearBombs(findedTile, tilesWithBomb);
-
-      if (!isTileInRevealedTiles(findedTile) && !findedTile.hasBomb) {
-        updateRevealedTiles.push(revealedTile);
+      if (current.nearBombsCount === 0) {
+        const neighbors = getNeighbors(tiles, current.key);
+        for (let i = 0; i < neighbors.length; i += 1) {
+          if (!visited.has(neighbors[i].key)) {
+            queue.push(neighbors[i]);
+          }
+        }
       }
     }
 
-    setTiles(tilesWithBomb);
-    setRevealedTiles([...revealedTiles, ...updateRevealedTiles]);
-  }
-
-  function getTileWithNearBombs(tile, tilesWithBomb) {
-    const tilesCopy = [...tilesWithBomb];
-    const coordsAndNearBombsCount = getCoords(tile);
-    const { nearBombsCount } = coordsAndNearBombsCount;
-
-    const tileWithNearBombs = tilesCopy.map((container) =>
-      container.map((currentTile) => {
-        if (currentTile.key === tile.key) {
-          return {
-            ...currentTile,
-            nearBombsCount,
-          };
-        }
-        return currentTile;
-      })
-    );
-
-    return tileWithNearBombs;
+    setRevealedTiles([...revealedTiles, ...newRevealed]);
   }
 
   function formatDate(date) {

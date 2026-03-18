@@ -21,28 +21,28 @@ export default (state, action) => {
     case "EASY":
       return {
         ...state,
-        boardArea: 25,
-        row: 5,
-        column: 5,
-        hiddenMines: 3,
+        boardArea: 81,
+        row: 9,
+        column: 9,
+        hiddenMines: 10,
         difficulty: "easy",
       };
     case "MEDIUM":
       return {
         ...state,
-        boardArea: 36,
-        row: 6,
-        column: 6,
-        hiddenMines: 10,
+        boardArea: 256,
+        row: 16,
+        column: 16,
+        hiddenMines: 40,
         difficulty: "medium",
       };
     case "HARD":
       return {
         ...state,
-        boardArea: 49,
-        row: 7,
-        column: 7,
-        hiddenMines: 20,
+        boardArea: 480,
+        row: 16,
+        column: 30,
+        hiddenMines: 99,
         difficulty: "hard",
       };
     default:
